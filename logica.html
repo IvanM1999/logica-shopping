@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Gate Control Center</title>
+    <!-- Google Font for a techy look -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        /* Variáveis CSS para cores e sombras neon */
+        :root {
+            --neon-blue: #00ffff;
+            --dark-blue-bg: #0a0a2a;
+            --darker-blue-bg: #05051a;
+            --glow-strength: 0 0 5px var(--neon-blue), 0 0 15px var(--neon-blue), 0 0 25px var(--neon-blue);
+            --text-glow-strength: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue);
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: var(--dark-blue-bg);
+            color: var(--neon-blue);
+            font-family: 'Share Tech Mono', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Alinha ao topo */
+            min-height: 100vh;
+            overflow-x: hidden; /* Evita barra de rolagem horizontal */
+        }
+
+        #control-center {
+            background-color: var(--darker-blue-bg);
+            border: 2px solid var(--neon-blue);
+            box-shadow: var(--glow-strength);
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 1200px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        h1, h2 {
+            text-shadow: var(--text-glow-strength);
+            color: var(--neon-blue);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-top: 0;
+        }
+
+        h2 {
+            font-size: 1.8em;
+        }
+
+        button {
+            background-color: rgba(0, 255, 255, 0.2);
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1em;
+            text-shadow: 0 0 3px var(--neon-blue); /* Menor glow para botões normais */
+            box-shadow: 0 0 3px var(--neon-blue);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: rgba(0, 255, 255, 0.4);
+            box-shadow: var(--glow-strength);
+        }
+
+        button:active {
+            background-color: rgba(0, 255, 255, 0.6);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        button:disabled {
+            background-color: rgba(0, 255, 255, 0.05);
+            border-color: rgba(0, 255, 255, 0.3);
+            color: rgba(0, 255, 255, 0.5);
+            cursor: not-allowed;
+            box-shadow: none;
+            text-shadow: none;
+        }
+
+        /* Estilo para o diagrama de fluxograma */
+        #flowchart-diagram {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px 20px; /* Espaçamento vertical e horizontal */
+            position: relative; /* Contexto para posicionamento absoluto das setas */
+            padding: 20px;
+        }
+
+        .flowchart-node {
+            background-color: rgba(5, 5, 26, 0.8);
+            border: 2px solid var(--neon-blue);
+            box-shadow: var(--glow-strength);
+            padding: 15px;
+            border-radius: 10px;
+            width: 220px;
+            text-align: center;
+            position: relative;
+            z-index: 1; /* Garante que os nós fiquem acima das setas */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%; /* Faz os nós preencherem a altura da célula do grid */
+        }
+
+        .flowchart-node.active-node {
+            background-color: rgba(0, 255, 255, 0.3);
+            border-color: #fff;
+            transform: scale(1.05);
+        }
+
+        .flowchart-node h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .flowchart-node p {
+            margin: 5px 0;
+            font-size: 1.1em;
+        }
+
+        .flowchart-node span {
+            font-weight: bold;
+            text-shadow: var(--text-glow-strength);
+        }
+
+        /* Estilo das linhas de fluxo (setas) */
+        .flow-line {
+            position: absolute;
+            background-color: var(--neon-blue);
+            box-shadow: var(--glow-strength);
+            z-index: 0; /* Abaixo dos nós */
+        }
+        .flow-line.horizontal {
+            height: 3px;
+        }
+        .flow-line.vertical {
+            width: 3px;
+        }
+        .flow-line::after { /* Ponta da seta */
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            box-shadow: var(--glow-strength);
+        }
+
+        /* Ocultando setas estáticas pois o flexbox é dinâmico */
+        .flow-line { display: none; }
+
+        .sensor-btn.active {
+            background-color: #00ff00;
+            color: #000;
+            box-shadow: 0 0 15px #00ff00;
+        }
+
+        /* Painel de Status e Log */
+        #status-log {
+            margin-top: 30px;
+            text-align: left;
+            background-color: var(--darker-blue-bg);
+            border: 1px solid var(--neon-blue);
+            box-shadow: var(--glow-strength);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        #log-output {
+            background-color: rgba(0, 255, 255, 0.05);
+            border: 1px dashed rgba(0, 255, 255, 0.5);
+            padding: 15px;
+            height: 150px;
+            overflow-y: auto; /* Permite rolagem se o log for muito longo */
+            border-radius: 5px;
+            font-size: 0.9em;
+            line-height: 1.4;
+            color: rgba(0, 255, 255, 0.8);
+            text-shadow: 0 0 2px var(--neon-blue);
+        }
+        #log-output p {
+            margin: 3px 0;
+        }
+        #log-output p.error {
+            color: #ff0000;
+            text-shadow: 0 0 5px #ff0000;
+        }
+        #log-output p.success {
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+        }
+
+        /* Ajustes responsivos para telas menores */
+        @media (max-width: 768px) {
+            #flowchart-diagram {
+                grid-template-columns: 1fr; /* Empilha os nós verticalmente */
+                grid-template-rows: auto;
+                gap: 30px;
+            }
+            .flowchart-node {
+                width: 80%;
+                margin: 0 auto;
+            }
+            /* Esconde as linhas de fluxo complexas em telas pequenas */
+            .flow-line, #line-m-a-feedback {
+                display: none;
+            }
+            /* Adiciona linhas verticais simples entre os nós empilhados */
+            .flowchart-node:not(:last-of-type)::after {
+                content: '';
+                position: absolute;
+                bottom: -20px;
+                left: 50%;
+                width: 3px;
+                height: 20px;
+                background-color: var(--neon-blue);
+                box-shadow: var(--glow-strength);
+                transform: translateX(-50%);
+            }
+            .flowchart-node:not(:last-of-type)::before { /* Ponta da seta */
+                content: '';
+                position: absolute;
+                bottom: -20px;
+                left: 50%;
+                width: 0;
+                height: 0;
+                border-left: 8px solid transparent;
+                border-right: 8px solid transparent;
+                border-top: 10px solid var(--neon-blue);
+                transform: translateX(-50%) translateY(100%);
+                box-shadow: var(--glow-strength);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="control-center">
+        <h1>Shopping Gate Control Center</h1>
+
+        <div id="flowchart-diagram">
+            <!-- Passo 1: Sensor 1 -->
+            <div class="flowchart-node" id="node-s1">
+                <h2>Sensor 1 (Entrada)</h2>
+                <p>Varredura: <span id="scan-timer">1s</span></p>
+                <p>Status: <span id="s1-status">Livre</span></p>
+                <button id="btn-s1" class="sensor-btn">Detectar Carro</button>
+            </div>
+
+            <!-- Passo 2: Processamento -->
+            <div class="flowchart-node" id="node-proc">
+                <h2>Processamento</h2>
+                <p id="proc-audio">Audio: Off</p>
+                <p id="proc-ticket">Ticket: Off</p>
+            </div>
+
+            <!-- Passo 3: Cancela -->
+            <div class="flowchart-node" id="node-gate">
+                <h2>Cancela</h2>
+                <p>Estado: <span id="gate-status">Fechada</span></p>
+                <p>Timer: <span id="gate-timer">---</span></p>
+            </div>
+
+            <!-- Passo 4: Sensor 2 -->
+            <div class="flowchart-node" id="node-s2">
+                <h2>Sensor 2 (Passagem)</h2>
+                <p>Status: <span id="s2-status">Livre</span></p>
+                <button id="btn-s2" class="sensor-btn" disabled>Carro Passando</button>
+            </div>
+
+            <!-- Override -->
+            <div class="flowchart-node" id="node-manual">
+                <h2>Manual Override</h2>
+                <button id="manual-open">Manual Open</button>
+                <button id="manual-close">Manual Close</button>
+            </div>
+        </div>
+        <div id="system-mode" style="font-size: 1.2em;">Modo: <span id="current-mode">VARREDURA (1s)</span></div>
+
+        <div id="status-log">
+            <h2>System Log</h2>
+            <div id="log-output"></div>
+        </div>
+    </div>
+
+    <script>
+        // Referências aos elementos HTML
+        const logOutputDiv = document.getElementById('log-output');
+        const s1Status = document.getElementById('s1-status');
+        const s2Status = document.getElementById('s2-status');
+        const gateStatus = document.getElementById('gate-status');
+        const procAudio = document.getElementById('proc-audio');
+        const procTicket = document.getElementById('proc-ticket');
+        const currentMode = document.getElementById('current-mode');
+        const scanTimerText = document.getElementById('scan-timer');
+
+        const btnS1 = document.getElementById('btn-s1');
+        const btnS2 = document.getElementById('btn-s2');
+
+        // Estados do Sistema
+        let sensor1Detected = false;
+        let sensor2Detected = false;
+        let systemBusy = false;
+        let gateIsOpen = false;
+        let scanSeconds = 1;
+        let systemState = 'IDLE'; // IDLE, PROCESSING, WAITING_OPEN, OPEN, CLOSING
+
+        // Constantes de tempo para simulação
+        const GATE_OPEN_TIME = 2000; // 2 segundos para abrir
+        const GATE_CLOSE_TIME = 2000; // 2 segundos para fechar
+
+        /**
+         * Registra um evento no log do sistema.
+         * @param {string} message - A mensagem a ser logada.
+         * @param {string} type - O tipo de mensagem ('info', 'success', 'error').
+         */
+        function logEvent(message, type = 'info') {
+            const p = document.createElement('p');
+            p.textContent = `[${new Date().toLocaleTimeString()}] > ${message}`;
+            p.classList.add(type);
+            logOutputDiv.prepend(p); // Adiciona ao topo do log
+            // Limita o número de entradas no log para evitar sobrecarga
+            if (logOutputDiv.children.length > 50) {
+                logOutputDiv.removeChild(logOutputDiv.lastChild);
+            }
+        }
+
+        function highlightNode(id) {
+            document.querySelectorAll('.flowchart-node').forEach(n => n.classList.remove('active-node'));
+            if(id) document.getElementById(id).classList.add('active-node');
+        }
+
+        /**
+         * Lógica de Varredura (Loop de 1s)
+         */
+        setInterval(() => {
+            if (systemState === 'IDLE') {
+                highlightNode('node-s1');
+                logEvent("Varredura Sensor 1...");
+                
+                if (sensor1Detected) {
+                    startProcessing();
+                }
+            }
+        }, 1000);
+
+        function startProcessing() {
+            systemState = 'PROCESSING';
+            currentMode.textContent = "PROCESSANDO TICKET/AUDIO";
+            highlightNode('node-proc');
+            
+            logEvent("Carro detectado! Executando áudio...", "success");
+            procAudio.textContent = "Audio: EXECUTANDO";
+            procAudio.style.color = "#00ff00";
+
+            setTimeout(() => {
+                logEvent("Emitindo Ticket...");
+                procTicket.textContent = "Ticket: EMITIDO";
+                procTicket.style.color = "#00ff00";
+                
+                waitForGate();
+            }, 1000);
+        }
+
+        function waitForGate() {
+            systemState = 'WAITING_OPEN';
+            currentMode.textContent = "AGUARDANDO 2S PARA ABRIR";
+            highlightNode('node-gate');
+            document.getElementById('gate-timer').textContent = "2s";
+
+            setTimeout(() => {
+                openGate();
+            }, 2000);
+        }
+
+        function openGate() {
+            systemState = 'OPEN';
+            gateIsOpen = true;
+            currentMode.textContent = "CANCELA ABERTA - AGUARDANDO PASSAGEM";
+            gateStatus.textContent = "ABERTA";
+            gateStatus.style.color = "#00ff00";
+            logEvent("Cancela Aberta. Aguardando Sensor 2 (Saída).", "success");
+            
+            btnS1.disabled = true;
+            btnS2.disabled = false;
+            highlightNode('node-s2');
+        }
+
+        function closeGate() {
+            systemState = 'CLOSING';
+            currentMode.textContent = "FECHANDO CANCELA";
+            logEvent("Carro passou. Fechando cancela...");
+            
+            setTimeout(() => {
+                gateIsOpen = false;
+                gateStatus.textContent = "Fechada";
+                gateStatus.style.color = "var(--neon-blue)";
+                resetSystem();
+            }, 1000);
+        }
+
+        function resetSystem() {
+            systemState = 'IDLE';
+            sensor1Detected = false;
+            sensor2Detected = false;
+            btnS1.disabled = false;
+            btnS1.classList.remove('active');
+            btnS2.disabled = true;
+            btnS2.classList.remove('active');
+            
+            procAudio.textContent = "Audio: Off";
+            procAudio.style.color = "inherit";
+            procTicket.textContent = "Ticket: Off";
+            procTicket.style.color = "inherit";
+            s1Status.textContent = "Livre";
+            s2Status.textContent = "Livre";
+            document.getElementById('gate-timer').textContent = "---";
+            
+            currentMode.textContent = "VARREDURA (1s)";
+            logEvent("Sistema pronto para nova detecção.");
+            highlightNode('node-s1');
+        }
+
+        // Eventos de Botão
+        btnS1.addEventListener('click', () => {
+            if (systemState !== 'IDLE') return;
+            sensor1Detected = true;
+            btnS1.classList.add('active');
+            s1Status.textContent = "OCUPADO";
+            logEvent("Sensor 1 Ativado manualmente.");
+        });
+
+        btnS2.addEventListener('click', () => {
+            if (systemState !== 'OPEN') {
+                logEvent("Erro: O carro só pode passar se a cancela estiver aberta!", "error");
+                return;
+            }
+            sensor2Detected = true;
+            btnS2.classList.add('active');
+            s2Status.textContent = "CARRO PASSANDO";
+            closeGate();
+        });
+    </script>
+</body>
+</html>
