@@ -1,255 +1,368 @@
-
-        /* Estilo para o diagrama de fluxograma */
-        #flowchart-diagram {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 40px 20px; /* Espaçamento vertical e horizontal */
-            position: relative; /* Contexto para posicionamento absoluto das setas */
-            padding: 20px;
-        }
-
-        .flowchart-node {
-            background-color: rgba(5, 5, 26, 0.8);
-            border: 2px solid var(--neon-blue);
-            box-shadow: var(--glow-strength);
-            padding: 15px;
-            border-radius: 10px;
-            width: 220px;
-            text-align: center;
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vending Machine Automotiva - Proposta Corporativa de Investimento</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* CONFIGURAÇÕES DE RESPONSIVIDADE UNIVERSAL E FLUIDEZ */
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, border-color 0.3s, transform 0.3s; }
+        html { scroll-behavior: smooth; }
+        body { background-color: #040711; display: flex; flex-direction: column; align-items: center; padding: 20px 0; gap: 40px; }
+        
+        /* Container Adaptável: Slide em Desktop, Card Fluido em Mobile */
+        .slide-container {
+            width: 95vw;
+            min-height: auto;
+            background-color: #0b0f19;
+            color: #f8fafc;
+            font-family: 'Urbanist', sans-serif;
             position: relative;
-            z-index: 1; /* Garante que os nós fiquem acima das setas */
+            overflow: hidden;
             display: flex;
-            height: 100%; /* Faz os nós preencherem a altura da célula do grid */
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 30px 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+            border-radius: 12px;
         }
 
-        .flowchart-node.active-node {
-            background-color: rgba(0, 255, 255, 0.3);
-            border-color: #fff;
-            transform: scale(1.05);
-        }
-
-        .flowchart-node h2 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            text-shadow: var(--text-glow-strength);
-        }
-
-        /* Estilo das linhas de fluxo (setas) */
-        .flow-line {
-            position: absolute;
-            box-shadow: var(--glow-strength);
-        }
-
-        /* Ocultando setas estáticas pois o flexbox é dinâmico */
-        .flow-line { display: none; }
-
-        .sensor-btn.active {
-            background-color: #00ff00;
-            color: #000;
-            box-shadow: 0 0 15px #00ff00;
-        }
-
-        /* Painel de Status e Log */
-                grid-template-rows: auto;
-                gap: 30px;
+        /* Regras para Telas Grandes (Computadores e Projetores) */
+        @media (min-width: 1025px) {
+            body { padding: 40px 0; gap: 60px; }
+            .slide-container {
+                width: 90vw;
+                height: 50.625vw; /* Proporção fixa de 16:9 */
+                max-width: 1280px;
+                max-height: 720px;
+                padding: 5% 6%;
             }
-            .flowchart-node {
-                width: 80%;
-                margin: 0 auto;
-        <h1>Shopping Gate Control Center</h1>
+        }
 
-        <div id="flowchart-diagram">
-            <!-- Passo 1: Sensor 1 -->
-            <div class="flowchart-node" id="node-s1">
-                <h2>Sensor 1 (Entrada)</h2>
-                <p>Varredura: <span id="scan-timer">1s</span></p>
-                <p>Status: <span id="s1-status">Livre</span></p>
-                <button id="btn-s1" class="sensor-btn">Detectar Carro</button>
+        /* Efeito de iluminação premium */
+        .slide-container::before {
+            content: ''; position: absolute; top: -15%; right: -15%;
+            width: 40%; height: 70%;
+            background: radial-gradient(circle, rgba(0, 229, 255, 0.08) 0%, transparent 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .slide-container::after {
+            content: ''; position: absolute; bottom: 8%; left: 6%; right: 6%;
+            height: 1px; background: linear-gradient(90deg, #00e5ff 0%, transparent 100%);
+            opacity: 0.2;
+        }
+
+        .slide-container > * { position: relative; z-index: 1; }
+
+        /* TIPOGRAFIA DINÂMICA COMPATÍVEL COM MOBILE */
+        h1 { font-size: 2.5rem; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 15px; text-transform: uppercase; letter-spacing: -1px; }
+        h1 span { color: #00e5ff; }
+        
+        .slide-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 25px; border-left: 5px solid #00e5ff; padding-left: 15px; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
+
+        p, li { font-size: 1.05rem; line-height: 1.6; color: #94a3b8; }
+        strong { color: #fff; font-weight: 600; }
+
+        @media (min-width: 1025px) {
+            h1 { font-size: 4.5rem; margin-bottom: 2%; }
+            .slide-title { font-size: 2.2rem; margin-bottom: 4%; }
+            p, li { font-size: 1.2rem; }
+        }
+
+        .content-area { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; margin-bottom: 40px; }
+        @media (min-width: 1025px) { .content-area { margin-bottom: 0; height: 80%; } }
+
+        /* LAYOUTS MULTIPLATAFORMA (Mudam de Grade para Coluna Única no Celular) */
+        .title-layout { text-align: left; height: 100%; justify-content: center; display: flex; flex-direction: column; align-items: start; }
+        .title-layout .subtitle { font-size: 1.2rem; color: #94a3b8; margin-bottom: 25px; font-weight: 300; }
+        @media (min-width: 1025px) { 
+            .title-layout { max-width: 85%; } 
+            .title-layout .subtitle { font-size: 1.5rem; margin-bottom: 4%; }
+        }
+        
+        .badge { background: rgba(0, 229, 255, 0.1); border: 1px solid #00e5ff; color: #00e5ff; padding: 6px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; }
+
+        .two-column { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+        .two-column.tiled > div { background: #111625; border: 1px solid #1e293b; border-radius: 16px; padding: 25px; }
+        .two-column.tiled h3 { color: #00e5ff; font-size: 1.3rem; margin-bottom: 10px; }
+
+        @media (min-width: 1025px) {
+            .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 5%; }
+            .two-column.tiled > div { padding: 6%; }
+            .two-column.tiled h3 { font-size: 1.6rem; margin-bottom: 3%; }
+        }
+
+        .image-wrapper { width: 100%; height: 200px; border-radius: 16px; overflow: hidden; border: 1px solid #1e293b; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .image-wrapper img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.9); }
+        @media (min-width: 1025px) { .image-wrapper { height: 100%; max-height: 380px; } }
+
+        .tiled-content { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+        .tile { background: #111625; border-radius: 16px; padding: 25px; border: 1px solid #1e293b; }
+        .tile:hover { border-color: #00e5ff; transform: translateY(-4px); background: #131b2e; }
+        .tile .icon { font-size: 1.8rem; color: #00e5ff; margin-bottom: 15px; }
+        .tile h3 { font-size: 1.2rem; margin-bottom: 8px; color: #fff; font-weight: 600; }
+
+        @media (min-width: 1025px) {
+            .tiled-content { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3%; }
+            .tile { padding: 8% 6%; }
+            .tile .icon { font-size: 2.2rem; margin-bottom: 8%; }
+            .tile h3 { font-size: 1.35rem; margin-bottom: 4%; }
+        }
+
+        .bullet-list { list-style: none; }
+        .bullet-list li { position: relative; padding-left: 30px; margin-bottom: 15px; }
+        .bullet-list li::before { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 0; color: #00e5ff; font-size: 1rem; }
+
+        /* MÓDULO FINANCEIRO */
+        .highlight-numbers { display: flex; flex-direction: column; align-items: center; gap: 25px; background: #111625; padding: 30px; border-radius: 20px; border: 1px solid #1e293b; text-align: center; }
+        .number-box { padding-right: 0; border-right: none; padding-bottom: 20px; border-bottom: 1px solid #1e293b; width: 100%; }
+        .big-number { font-size: 4.5rem; font-weight: 800; color: #00e5ff; line-height: 1; letter-spacing: -2px; }
+        .number-label { font-size: 0.85rem; font-weight: 600; color: #94a3b8; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
+
+        @media (min-width: 1025px) {
+            .highlight-numbers { display: flex; flex-direction: row; text-align: left; padding: 5%; gap: 5%; }
+            .number-box { text-align: center; padding-right: 5%; border-right: 1px solid #1e293b; border-bottom: none; padding-bottom: 0; width: auto; }
+            .big-number { font-size: 6rem; }
+            .number-label { margin-top: 10%; }
+        }
+
+        /* GOVERNANÇA */
+        .profile-card { background: #111625; border: 1px solid #1e293b; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; text-align: center; }
+        .profile-avatar { width: 70px; height: 70px; border-radius: 50%; background: rgba(0, 229, 255, 0.1); border: 2px solid #00e5ff; display: flex; justify-content: center; align-items: center; font-size: 1.8rem; color: #00e5ff; flex-shrink: 0; }
+        .profile-info h3 { font-size: 1.3rem; color: #fff; margin-bottom: 4px; }
+        .profile-info .role { color: #00e5ff; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+
+        @media (min-width: 1025px) {
+            .profile-card { flex-direction: row; text-align: left; padding: 5%; gap: 6%; }
+            .profile-avatar { width: 80px; height: 80px; font-size: 2.2rem; }
+            .profile-info h3 { font-size: 1.5rem; }
+        }
+
+        /* GRÁFICO SVG RESPONSIVO */
+        .area-chart-container { width: 100%; height: 180px; margin-top: 15px; }
+        .chart-svg { width: 100%; height: 100%; overflow: visible; }
+        .chart-line { fill: none; stroke: #00e5ff; stroke-width: 4; }
+        .chart-area { fill: rgba(0, 229, 255, 0.05); }
+        @media (min-width: 1025px) { .area-chart-container { height: 260px; } }
+    </style>
+</head>
+<body>
+
+<!-- SLIDE 1: CAPA CORPORATIVA -->
+<div class="slide-container" id="slide1">
+    <div class="title-layout">
+        <div class="badge">Oportunidade de Investimento</div>
+        <h1>Vending Machine<br><span>Automotiva S.A.</span></h1>
+        <p class="subtitle">Logística preditiva e automação comercial 24/7 para o mercado de varejo e reposição automotiva.</p>
+        <div style="margin-top: 10px; font-size: 0.85rem; color: #64748b; text-transform: uppercase; letter-spacing: 2px;">
+            Estrutura de Governança: <strong>Conselho Fundador & Diretoria Executiva</strong>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 2: TESE DE MERCADO (O PROBLEMA) -->
+<div class="slide-container" id="slide2">
+    <h2 class="slide-title">Análise Estratégica: Ineficiência Logística Atual</h2>
+    <div class="content-area">
+        <div class="two-column tiled">
+            <div>
+                <h3>O Gap de Disponibilidade</h3>
+                <p>O ecossistema tradicional de autopeças e fluidos é excessivamente dependente de horários comerciais convencionais. Gargalos no fornecimento e a indisponibilidade noturna prejudicam frotas e motoristas em momentos de urgência mecânica.</p>
             </div>
-
-            <!-- Passo 2: Processamento -->
-            <div class="flowchart-node" id="node-proc">
-                <h2>Processamento</h2>
-                <p id="proc-audio">Audio: Off</p>
-                <p id="proc-ticket">Ticket: Off</p>
-            </div>
-
-            <!-- Passo 3: Cancela -->
-            <div class="flowchart-node" id="node-gate">
-                <h2>Cancela</h2>
-                <p>Estado: <span id="gate-status">Fechada</span></p>
-                <p>Timer: <span id="gate-timer">---</span></p>
-            </div>
-
-            <!-- Passo 4: Sensor 2 -->
-            <div class="flowchart-node" id="node-s2">
-                <h2>Sensor 2 (Passagem)</h2>
-                <p>Status: <span id="s2-status">Livre</span></p>
-                <button id="btn-s2" class="sensor-btn" disabled>Carro Passando</button>
-            </div>
-
-            <!-- Override -->
-            <div class="flowchart-node" id="node-manual">
-                <h2>Manual Override</h2>
-                <button id="manual-open">Manual Open</button>
-                <button id="manual-close">Manual Close</button>
+            <div>
+                <h3>Inviabilidade de Custos Fixos</h3>
+                <p>A expansão de PDVs físicos convencionais enfrenta barreiras devido ao alto custo imobiliário de implantação (CAPEX) e aos elevados encargos trabalhistas (OPEX) atrelados à manutenção de equipes para operações em regime 24 horas.</p>
             </div>
         </div>
-        <div id="system-mode" style="font-size: 1.2em;">Modo: <span id="current-mode">VARREDURA (1s)</span></div>
+    </div>
+</div>
 
-        <div id="status-log">
-            <h2>System Log</h2>
+<!-- SLIDE 3: A SOLUÇÃO -->
+<div class="slide-container" id="slide3">
+    <h2 class="slide-title">A Solução: Plataforma Autônoma Descentralizada</h2>
+    <div class="content-area">
+        <div class="two-column">
+            <div>
+                <p style="font-size: 1.3rem; color: #fff; margin-bottom: 15px; font-weight: 500;">Pontos de Conveniência Mecânica de Alta Densidade</p>
+                <p style="margin-bottom: 15px;">Infraestrutura de estações mecatrônicas de autoatendimento perfeitamente adaptadas para ambientes externos. O ecossistema realiza de forma segura o armazenamento, controle e entrega de insumos essenciais de manutenção rápida.</p>
+                <p>O modelo otimiza radicalmente a rentabilidade por metro quadrado, viabilizando a instalação ágil em postos de combustíveis, rodovias, pátios de frotas e complexos residenciais de grande escala.</p>
+            </div>
+            <div class="image-wrapper">
+                <img src="http://googleusercontent.com/image_collection/image_retrieval/3400970584941070463" alt="Hub de Atendimento Autônomo Automotivo">
+            </div>
+        </div>
+    </div>
+</div>
 
-    <script>
-        // Referências aos elementos HTML
-        const logOutputDiv = document.getElementById('log-output');
-        const s1Status = document.getElementById('s1-status');
-        const s2Status = document.getElementById('s2-status');
-        const gateStatus = document.getElementById('gate-status');
-        const procAudio = document.getElementById('proc-audio');
-        const procTicket = document.getElementById('proc-ticket');
-        const currentMode = document.getElementById('current-mode');
-        const scanTimerText = document.getElementById('scan-timer');
+<!-- SLIDE 4: ENGENHARIA DE PRODUTO -->
+<div class="slide-container" id="slide4">
+    <h2 class="slide-title">Engenharia e Robustez do Hardware</h2>
+    <div class="content-area">
+        <div class="tiled-content">
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-microchip"></i></div>
+                <h3>Microchip Blindado</h3>
+                <p>Unidade de processamento central baseada em arquitetura blindada de nível industrial, altamente imune a ruídos externos e dedicada à total estabilidade das operações.</p>
+            </div>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-gears"></i></div>
+                <h3>Dispersão de Carga Pesada</h3>
+                <p>Cinemática avançada combinada com atuadores mecânicos de alta precisão projetados para o manejo seguro e preciso de recipientes líquidos pesados e geometrias variadas.</p>
+            </div>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-shield-cat"></i></div>
+                <h3>Proteção Ambiental Ativa</h3>
+                <p>Gabinete blindado robusto dotado de controle térmico interno automatizado, mitigando riscos de degradação das propriedades químicas dos lubrificantes e fluidos.</p>
+            </div>
+        </div>
+    </div>
+</div>
 
-        const btnS1 = document.getElementById('btn-s1');
-        const btnS2 = document.getElementById('btn-s2');
+<!-- SLIDE 5: ARQUITETURA DIGITAL -->
+<div class="slide-container" id="slide5">
+    <h2 class="slide-title">Cibersegurança e Conectividade Edge</h2>
+    <div class="content-area">
+        <div class="two-column">
+            <div>
+                <ul class="bullet-list">
+                    <li><strong>Blindagem contra Interferências:</strong> Sistemas eletrônicos protegidos nativamente contra tentativas de ataques por pulsos eletromagnéticos externos.</li>
+                    <li><strong>Transações Criptografadas:</strong> Integração segura via API com gateways que processam pagamentos instantâneos digitais e por aproximação em ambientes isolados.</li>
+                    <li><strong>Telemetria Avançada:</strong> Inteligência de dados na ponta monitora os níveis de inventário e aciona a cadeia de suprimentos de forma automatizada e preditiva.</li>
+                </ul>
+            </div>
+            <div class="image-wrapper">
+                <img src="http://googleusercontent.com/image_collection/image_retrieval/2933551716199975923" alt="Interface de Segurança Digital">
+            </div>
+        </div>
+    </div>
+</div>
 
-        // Estados do Sistema
-        let sensor1Detected = false;
-        let sensor2Detected = false;
-        let systemBusy = false;
-        let gateIsOpen = false;
-        let scanSeconds = 1;
-        let systemState = 'IDLE'; // IDLE, PROCESSING, WAITING_OPEN, OPEN, CLOSING
+<!-- SLIDE 6: ECOSSISTEMA DE SEGURANÇA PATRIMONIAL -->
+<div class="slide-container" id="slide6">
+    <h2 class="slide-title">Mitigação de Riscos e Segurança Física</h2>
+    <div class="content-area">
+        <div class="tiled-content">
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-video"></i></div>
+                <h3>Visão Computacional IoT</h3>
+                <p>Dispositivos de captura integrados registram continuamente as interações ao redor do hub, gerando dados de segurança em tempo real.</p>
+            </div>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-bell"></i></div>
+                <h3>Sensores Responsivos</h3>
+                <p>Componentes de detecção triaxial analisam níveis de vibração estrutural para identificar de forma instantânea qualquer tentativa de violação física.</p>
+            </div>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-building-shield"></i></div>
+                <h3>Acionamento de Segurança</h3>
+                <p>Em cenários de ataque confirmado, o sistema central emite um sinal de alerta prioritário automático às autoridades e forças de segurança competentes.</p>
+            </div>
+        </div>
+    </div>
+</div>
 
-        // Constantes de tempo para simulação
-        const GATE_OPEN_TIME = 2000; // 2 segundos para abrir
-         */
-        function logEvent(message, type = 'info') {
-            const p = document.createElement('p');
-            p.textContent = `[${new Date().toLocaleTimeString()}] > ${message}`;
-            p.classList.add(type);
-            logOutputDiv.prepend(p); // Adiciona ao topo do log
-            // Limita o número de entradas no log para evitar sobrecarga
-            }
-        }
+<!-- SLIDE 7: PLANO DE EXPANSÃO (ROADMAP) -->
+<div class="slide-container" id="slide7">
+    <h2 class="slide-title">Plano de Implementação Corporativa</h2>
+    <div class="content-area">
+        <div class="two-column">
+            <div style="background: #111625; padding: 20px; border-radius: 12px; border-left: 4px solid #00e5ff;">
+                <p style="color: #fff; font-weight: 600; margin-bottom: 2px;">Fase 1: Viabilidade e Modelagem</p>
+                <p style="font-size: 0.95rem;">Estruturação financeira profunda, análise de retorno sobre investimento e contratos de exclusividade para pontos comerciais.</p>
+            </div>
+            <div style="background: #111625; padding: 20px; border-radius: 12px; border-left: 4px solid #00e5ff;">
+                <p style="color: #fff; font-weight: 600; margin-bottom: 2px;">Fase 2: Homologação Mecatrônica</p>
+                <p style="font-size: 0.95rem;">Montagem e consolidação das unidades de teste, calibração do firmware embarcado no microchip e testes de fadiga.</p>
+            </div>
+            <div style="background: #111625; padding: 20px; border-radius: 12px; border-left: 4px solid #00e5ff;">
+                <p style="color: #fff; font-weight: 600; margin-bottom: 2px;">Fase 3: Cadeia de Suprimentos</p>
+                <p style="font-size: 0.95rem;">Fechamento de acordos estratégicos e comerciais de fornecimento em larga escala com os maiores distribuidores e indústrias automotivas.</p>
+            </div>
+            <div style="background: #111625; padding: 20px; border-radius: 12px; border-left: 4px solid #00e5ff;">
+                <p style="color: #fff; font-weight: 600; margin-bottom: 2px;">Fase 4: Go-To-Market & Unidade Piloto</p>
+                <p style="font-size: 0.95rem;">Instalação física, validação técnica em ambiente real e ativação da Unidade Corporativa Operacional 01.</p>
+            </div>
+        </div>
+    </div>
+</div>
 
-        function highlightNode(id) {
-            document.querySelectorAll('.flowchart-node').forEach(n => n.classList.remove('active-node'));
-            if(id) document.getElementById(id).classList.add('active-node');
-        }
+<!-- SLIDE 8: MÉTRICAS E RETORNO FINANCEIRO -->
+<div class="slide-container" id="slide8">
+    <h2 class="slide-title">Viabilidade Financeira e Eficiência de Capital</h2>
+    <div class="content-area">
+        <div class="highlight-numbers">
+            <div class="number-box">
+                <div class="big-number">&lt;1</div>
+                <div class="number-label">Ano para Payback</div>
+            </div>
+            <div class="finance-text" style="width: 100%;">
+                <h3 style="color: #fff; font-size: 1.5rem; margin-bottom: 10px; margin-top: 15px;">Maximização de EBITDA</h3>
+                <p style="margin-bottom: 10px;">A eliminação completa de custos fixos com estruturas prediais complexas e encargos trabalhistas tradicionais assegura margens operacionais altamente previsíveis e resilientes.</p>
+                <p>O rápido atingimento do ponto de equilíbrio (*break-even*) por ativo possibilita que a expansão geográfica da rede ocorra de maneira acelerada e autossustentável por meio do fluxo de caixa gerado.</p>
+            </div>
+        </div>
+    </div>
+</div>
 
-        /**
-         * Lógica de Varredura (Loop de 1s)
-         */
-        setInterval(() => {
-            if (systemState === 'IDLE') {
-                highlightNode('node-s1');
-                logEvent("Varredura Sensor 1...");
-                
-                if (sensor1Detected) {
-                    startProcessing();
-                }
-            }
-        }, 1000);
+<!-- SLIDE 9: CRESCIMENTO DO MERCADO AUTÔNOMO -->
+<div class="slide-container" id="slide9">
+    <h2 class="slide-title">Escalabilidade e Projeção Setorial</h2>
+    <div class="content-area">
+        <div class="area-chart-container">
+            <svg class="chart-svg" viewBox="0 0 1000 260" preserveAspectRatio="none">
+                <path class="chart-area" d="M0,260 L0,220 L200,180 L400,140 L600,100 L800,60 L1000,20 L1000,260 Z"></path>
+                <polyline class="chart-line" points="0,220 200,180 400,140 600,100 800,60 1000,20"></polyline>
+            </svg>
+        </div>
+        <p style="margin-top: 15px; text-align: center; font-style: italic; color: #64748b; font-size: 0.85rem;">Curva de crescimento exponencial (Ano 1 ao Ano 6) com base no market share potencial do autoatendimento no setor automotivo.</p>
+    </div>
+</div>
 
-        function startProcessing() {
-            systemState = 'PROCESSING';
-            currentMode.textContent = "PROCESSANDO TICKET/AUDIO";
-            highlightNode('node-proc');
-            
-            logEvent("Carro detectado! Executando áudio...", "success");
-            procAudio.textContent = "Audio: EXECUTANDO";
-            procAudio.style.color = "#00ff00";
+<!-- SLIDE 10: GOVERNANÇA CORPORATIVA -->
+<div class="slide-container" id="slide10">
+    <h2 class="slide-title">Liderança e Governança</h2>
+    <div class="content-area">
+        <div class="two-column">
+            <div class="profile-card">
+                <div class="profile-avatar"><i class="fa-solid fa-gears"></i></div>
+                <div class="profile-info">
+                    <h3>Ivan Montibeller</h3>
+                    <div class="role">Diretor de Projetos & Engenharia</div>
+                    <p style="font-size: 0.95rem;">Líder técnico do projeto, responsável pelo desenho conceitual, engenharia dos sistemas mecatrônicos e segurança física estrutural das unidades.</p>
+                </div>
+            </div>
+            <div class="profile-card">
+                <div class="profile-avatar"><i class="fa-solid fa-chart-line"></i></div>
+                <div class="profile-info">
+                    <h3>Thaísi Correia Lima</h3>
+                    <div class="role">Diretora de Administração & Prospecção</div>
+                    <p style="font-size: 0.95rem;">Responsável pela gestão administrativa, inteligência comercial, relações governamentais e expansão/negociação de novos pontos comerciais estratégicos.</p>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 20px; background: rgba(0, 229, 255, 0.03); padding: 15px; border-radius: 12px; border: 1px dashed rgba(0, 229, 255, 0.3); text-align: center;">
+            <p style="font-size: 0.9rem; color: #cbd5e1;">*O projeto conta com uma equipe técnica consultiva terceirizada sob demanda para o desenvolvimento ágil de firmware, automação digital e segurança em nuvem.*</p>
+        </div>
+    </div>
+</div>
 
-            setTimeout(() => {
-                logEvent("Emitindo Ticket...");
-                procTicket.textContent = "Ticket: EMITIDO";
-                procTicket.style.color = "#00ff00";
-                
-                waitForGate();
-            }, 1000);
-        }
+<!-- SLIDE 11: ENCERRAMENTO -->
+<div class="slide-container" id="slide11">
+    <div style="text-align: center; align-self: center; width: 100%; max-width: 80%; margin: auto 0;">
+        <h2 style="font-size: 2.5rem; color: #00e5ff; margin-bottom: 20px; font-weight: 700; text-transform: uppercase;">Parceria Estratégica</h2>
+        <p style="font-size: 1.3rem; color: #fff; margin-bottom: 30px; font-weight: 300;">Convidamos sua organização a liderar a consolidação deste canal de vendas de alta rentabilidade e escalabilidade global.</p>
+        <div style="border-top: 1px solid #1e293b; padding-top: 20px; color: #64748b; font-size: 1rem;">
+            <p><strong>Abertura de Rodada para Investimento de Capital Semente (Seed)</strong></p>
+            <p style="margin-top: 10px;">Contato Corporativo: dsbrti2022@gmail.com</p>
+        </div>
+    </div>
+</div>
 
-        function waitForGate() {
-            systemState = 'WAITING_OPEN';
-            currentMode.textContent = "AGUARDANDO 2S PARA ABRIR";
-            highlightNode('node-gate');
-            document.getElementById('gate-timer').textContent = "2s";
-
-            setTimeout(() => {
-                openGate();
-            }, 2000);
-        }
-
-        function openGate() {
-            systemState = 'OPEN';
-            gateIsOpen = true;
-            currentMode.textContent = "CANCELA ABERTA - AGUARDANDO PASSAGEM";
-            gateStatus.textContent = "ABERTA";
-            gateStatus.style.color = "#00ff00";
-            logEvent("Cancela Aberta. Aguardando Sensor 2 (Saída).", "success");
-            
-            btnS1.disabled = true;
-            btnS2.disabled = false;
-            highlightNode('node-s2');
-        }
-
-        function closeGate() {
-            systemState = 'CLOSING';
-            currentMode.textContent = "FECHANDO CANCELA";
-            logEvent("Carro passou. Fechando cancela...");
-            
-            setTimeout(() => {
-                gateIsOpen = false;
-                gateStatus.textContent = "Fechada";
-                gateStatus.style.color = "var(--neon-blue)";
-                resetSystem();
-            }, 1000);
-        }
-
-        function resetSystem() {
-            systemState = 'IDLE';
-            sensor1Detected = false;
-            sensor2Detected = false;
-            btnS1.disabled = false;
-            btnS1.classList.remove('active');
-            btnS2.disabled = true;
-            btnS2.classList.remove('active');
-            
-            procAudio.textContent = "Audio: Off";
-            procAudio.style.color = "inherit";
-            procTicket.textContent = "Ticket: Off";
-            procTicket.style.color = "inherit";
-            s1Status.textContent = "Livre";
-            s2Status.textContent = "Livre";
-            document.getElementById('gate-timer').textContent = "---";
-            
-            currentMode.textContent = "VARREDURA (1s)";
-            logEvent("Sistema pronto para nova detecção.");
-            highlightNode('node-s1');
-        }
-
-        // Eventos de Botão
-        btnS1.addEventListener('click', () => {
-            if (systemState !== 'IDLE') return;
-            sensor1Detected = true;
-            btnS1.classList.add('active');
-            s1Status.textContent = "OCUPADO";
-            logEvent("Sensor 1 Ativado manualmente.");
-        });
-
-        btnS2.addEventListener('click', () => {
-            if (systemState !== 'OPEN') {
-                logEvent("Erro: O carro só pode passar se a cancela estiver aberta!", "error");
-                return;
-            }
-            sensor2Detected = true;
-            btnS2.classList.add('active');
-            s2Status.textContent = "CARRO PASSANDO";
-            closeGate();
-        });
-    </script>
 </body>
 </html>
